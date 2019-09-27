@@ -2,17 +2,25 @@ module PosPrinter
 
 open Microsoft.PointOfService
 
+let private getPrinterDeviceInfoByName deviceName = 
+   let posExplorer = PosExplorer()
+   let posPrinterInfoMaybe = posExplorer.GetDevice("PosPrinter", deviceName)
+   if isNull posPrinterInfoMaybe then
+       seq { for d in posExplorer.GetDevices("PosPrinter") -> d }
+       |> Seq.tryFind (fun d -> d.ServiceObjectName = deviceName)
+   else
+       Some posPrinterInfoMaybe
+
+let private getDefaultPrinterDeviceInfo () =
+   let posExplorer = PosExplorer()
+   seq { for d in posExplorer.GetDevices("PosPrinter") -> d }
+   |> Seq.tryFind (fun _d -> true)
+
 let private setUpDevice deviceName =
-    let posExplorer = PosExplorer()
-    let posPrinterInfoMaybe = posExplorer.GetDevice("PosPrinter", deviceName)
-    if isNull posPrinterInfoMaybe then
-        seq { for d in posExplorer.GetDevices("PosPrinter") -> d }
-        |> Seq.tryFind (fun d -> d.ServiceObjectName = deviceName)
-    else
-        Some posPrinterInfoMaybe
+    getPrinterDeviceInfoByName deviceName
     |> Option.bind (fun posPrinterInfo ->
         try
-            let device = posExplorer.CreateInstance(posPrinterInfo)
+            let device = PosExplorer().CreateInstance(posPrinterInfo)
             let posPrinter = device :?> PosPrinter
             posPrinter.Open()
             Some posPrinter
