@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29318.209
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Pos4NetImagePrinter", "src\Pos4NetImagePrinter\Pos4NetImagePrinter.fsproj", "{225EB695-2DCA-4967-AD97-885636B28079}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{225EB695-2DCA-4967-AD97-885636B28079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{225EB695-2DCA-4967-AD97-885636B28079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{225EB695-2DCA-4967-AD97-885636B28079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{225EB695-2DCA-4967-AD97-885636B28079}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {229CCFD7-4AB3-4799-9B34-004A534CE36F}
+	EndGlobalSection
+EndGlobal
