@@ -12,7 +12,7 @@ type Printer =
 type Width =
    | AsIs
    | Full
-   | Size of int
+   | Pixels of int
 
 type CommandLineOptions = {
    printer: Printer
@@ -57,7 +57,7 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
       | (IgonoreCase "AsIs")::restArgs ->
          parseCommandLineArgsRec restArgs { optionsSoFar with width = AsIs }
       | (Int size)::restArgs ->
-         parseCommandLineArgsRec restArgs { optionsSoFar with width = Size size }
+         parseCommandLineArgsRec restArgs { optionsSoFar with width = Pixels size }
       | arg::_restArgs ->
          raise <| new ArgumentOutOfRangeException("width", arg, "Invalid argument given for /width param. Use Full. AsIs or a number")
       | [] ->

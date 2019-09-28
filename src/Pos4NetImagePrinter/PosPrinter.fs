@@ -16,8 +16,8 @@ let private getDefaultPrinterDeviceInfo () =
    seq { for d in posExplorer.GetDevices("PosPrinter") -> d }
    |> Seq.tryFind (fun _d -> true)
 
-let private setUpDevice deviceName =
-    getPrinterDeviceInfoByName deviceName
+let private setUpDevice deviceInfo =
+    deviceInfo
     |> Option.bind (fun posPrinterInfo ->
         try
             let device = PosExplorer().CreateInstance(posPrinterInfo)
@@ -37,10 +37,16 @@ let rec private ensure func =
         printfn "Problem getting a device"
         ensure func
         
-let getReady logicalDeviceName =
-    let posPrinter = ensure (fun () -> setUpDevice logicalDeviceName)
+let getDeviceByName logicalDeviceName =
+    let posPrinter = ensure (fun () -> getPrinterDeviceInfoByName logicalDeviceName |> setUpDevice )
     posPrinter.Claim(-1)
     posPrinter.DeviceEnabled <- true
     posPrinter
+
+let getDefaultDevice () =
+   let posPrinter = ensure (fun () -> getDefaultPrinterDeviceInfo () |> setUpDevice )
+   posPrinter.Claim(-1)
+   posPrinter.DeviceEnabled <- true
+   posPrinter
 
     

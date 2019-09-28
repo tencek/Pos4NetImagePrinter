@@ -1,9 +1,7 @@
 ﻿module Pos4NetImagePrinter.Pos4NetImagePrinter
 
-open System
-open System.Text
 open Microsoft.PointOfService
-
+open CommandLineOptions
 
 let logFunc str =
    printfn "%s" str
@@ -25,13 +23,31 @@ let main args =
           List.ofArray args
           |> CommandLineOptions.parseCommandLineArgs
 
-      let printer = PosPrinter.getReady "Microsoft PosPrinter Simulator"
+      let printer = 
+         match options.printer with
+         | Default -> PosPrinter.getDefaultDevice ()
+         | ByName name -> PosPrinter.getDeviceByName name
+
       printer.ErrorEvent.Add errorHandler
+      printer.MapMode <- MapMode.Dots
 
       if printer.CapRecBitmap then
-         printer.PrintNormal(PrinterStation.Receipt, "Ejchuchu")
-         printer.PrintBitmap(PrinterStation.Receipt, @"C:\Users\Manžel\Pictures\SmileFace.jpg", 100, PosPrinter.PrinterBitmapCenter)
-         System.Threading.Thread.Sleep 1000
+
+         match options.label with
+         | Some label -> printer.PrintNormal(PrinterStation.Receipt, label)
+         | _ -> ()
+
+         let width = 
+            match options.width with
+            | Full -> printer.RecLineWidth
+            | AsIs -> PosPrinter.PrinterBitmapAsIs
+            | Pixels pixels -> pixels
+
+         printer.PrintBitmap(PrinterStation.Receipt, options.imageFilePath, width, PosPrinter.PrinterBitmapCenter)
+         
+         if printer.CapRecPaperCut then
+            printer.CutPaper(PosPrinter.PrinterCutPaperFullCut)
+
          printer.Release()
       else
          failwithf "Printer %A does not support bitmap printing!" options.printer
