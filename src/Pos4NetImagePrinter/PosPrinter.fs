@@ -6,10 +6,10 @@ open FSharp.Collections
 let private getPrinterDeviceInfoByName printerName = 
    PosExplorer().GetDevices("PosPrinter")
    |> Seq.cast<DeviceInfo>
-   |> Seq.tryFind (fun d -> Array.contains printerName d.LogicalNames || d.ServiceObjectName = printerName)
+   |> Seq.tryFind (fun deviceInfo -> Array.contains printerName deviceInfo.LogicalNames || deviceInfo.ServiceObjectName = printerName)
    |> function
-      | Some printerInfo -> 
-         printerInfo
+      | Some deviceInfo -> 
+         deviceInfo
       | None ->
          failwithf "Printer device %s not found!" printerName
 
