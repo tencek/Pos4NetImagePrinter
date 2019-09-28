@@ -4,20 +4,14 @@ open Microsoft.PointOfService
 open FSharp.Collections
 
 let private getPrinterDeviceInfoByName printerName = 
-   PosExplorer().GetDevice("PosPrinter", printerName)
-   |> Option.ofObj
+   PosExplorer().GetDevices("PosPrinter")
+   |> Seq.cast<DeviceInfo>
+   |> Seq.tryFind (fun d -> Array.contains printerName d.LogicalNames || d.ServiceObjectName = printerName)
    |> function
-      | Some deviceInfo ->
-         deviceInfo
+      | Some printerInfo -> 
+         printerInfo
       | None ->
-         PosExplorer().GetDevices("PosPrinter")
-         |> Seq.cast<DeviceInfo>
-         |> Seq.tryFind (fun d -> d.ServiceObjectName = printerName)
-         |> function
-            | Some printerInfo -> 
-               printerInfo
-            | None ->
-               failwithf "Printer device %s not found!" printerName
+         failwithf "Printer device %s not found!" printerName
 
 let private getDefaultPrinterDeviceInfo () =
    PosExplorer().GetDevices("PosPrinter")
