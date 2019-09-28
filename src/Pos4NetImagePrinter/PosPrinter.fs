@@ -1,4 +1,4 @@
-module PosPrinter
+module Pos4NetImagePrinter.PosPrinter
 
 open Microsoft.PointOfService
 

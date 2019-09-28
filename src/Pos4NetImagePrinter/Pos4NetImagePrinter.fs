@@ -1,4 +1,6 @@
-﻿open System
+﻿module Pos4NetImagePrinter.Pos4NetImagePrinter
+
+open System
 open System.Text
 open Microsoft.PointOfService
 
@@ -17,24 +19,27 @@ let deviceErrorHandler (eventArgs:DeviceErrorEventArgs) =
 
 
 [<EntryPoint>]
-let main argv =
+let main args =
+   try
+      let options = 
+          List.ofArray args
+          |> CommandLineOptions.parseCommandLineArgs
 
-    let printer = PosPrinter.getReady "Microsoft PosPrinter Simulator"
-    
-    printer.ErrorEvent.Add errorHandler
+      let printer = PosPrinter.getReady "Microsoft PosPrinter Simulator"
+ 
+      printer.ErrorEvent.Add errorHandler
 
-    //if printer.CapRecBitmap then
-    try
-       printer.PrintNormal(PrinterStation.Receipt, "Ejchuchu")
-       printer.PrintBitmap(PrinterStation.Receipt, @"C:\Users\Manžel\Pictures\SmileFace.jpg", 100, PosPrinter.PrinterBitmapCenter)
-    with 
+
+      printer.PrintNormal(PrinterStation.Receipt, "Ejchuchu")
+      printer.PrintBitmap(PrinterStation.Receipt, @"C:\Users\Manžel\Pictures\SmileFace.jpg", 100, PosPrinter.PrinterBitmapCenter)
+
+      System.Threading.Thread.Sleep 1000
+
+      printer.Release()
+
+   with 
       ex ->
          errorHandler ex
-    //else
-      //()
 
-    System.Threading.Thread.Sleep 1000
 
-    printer.Release()
-
-    0 // return an integer exit code
+   0 // return an integer exit code
