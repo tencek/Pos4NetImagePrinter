@@ -1,52 +1,48 @@
 module Pos4NetImagePrinter.PosPrinter
 
 open Microsoft.PointOfService
+open FSharp.Collections
 
-let private getPrinterDeviceInfoByName deviceName = 
-   let posExplorer = PosExplorer()
-   let posPrinterInfoMaybe = posExplorer.GetDevice("PosPrinter", deviceName)
-   if isNull posPrinterInfoMaybe then
-       seq { for d in posExplorer.GetDevices("PosPrinter") -> d }
-       |> Seq.tryFind (fun d -> d.ServiceObjectName = deviceName)
-   else
-       Some posPrinterInfoMaybe
+let private getPrinterDeviceInfoByName printerName = 
+   PosExplorer().GetDevice("PosPrinter", printerName)
+   |> Option.ofObj
+   |> function
+      | Some deviceInfo ->
+         deviceInfo
+      | None ->
+         PosExplorer().GetDevices("PosPrinter")
+         |> Seq.cast<DeviceInfo>
+         |> Seq.tryFind (fun d -> d.ServiceObjectName = printerName)
+         |> function
+            | Some printerInfo -> 
+               printerInfo
+            | None ->
+               failwithf "Printer device %s not found!" printerName
 
 let private getDefaultPrinterDeviceInfo () =
-   let posExplorer = PosExplorer()
-   seq { for d in posExplorer.GetDevices("PosPrinter") -> d }
-   |> Seq.tryFind (fun _d -> true)
+   PosExplorer().GetDevices("PosPrinter")
+   |> Seq.cast
+   |> Seq.tryHead
+   |> function
+      | Some deviceInfo ->
+         deviceInfo
+      | None ->
+         failwith "No printer device found!"
 
-let private setUpDevice deviceInfo =
-    deviceInfo
-    |> Option.bind (fun posPrinterInfo ->
-        try
-            let device = PosExplorer().CreateInstance(posPrinterInfo)
-            let posPrinter = device :?> PosPrinter
-            posPrinter.Open()
-            Some posPrinter
-        with ex ->
-            printfn "Problem: %A" ex
-            None)
-
-let rec private ensure func =
-    match func() with
-    | Some v ->
-        v
-    | None ->
-        System.Threading.Thread.Sleep 500
-        printfn "Problem getting a device"
-        ensure func
+let private setUpDevice posPrinterInfo =
+   let device = PosExplorer().CreateInstance(posPrinterInfo)
+   let posPrinter = device :?> PosPrinter
+   posPrinter.Open()
+   posPrinter
         
 let getDeviceByName logicalDeviceName =
-    let posPrinter = ensure (fun () -> getPrinterDeviceInfoByName logicalDeviceName |> setUpDevice )
+    let posPrinter = getPrinterDeviceInfoByName logicalDeviceName |> setUpDevice
     posPrinter.Claim(-1)
     posPrinter.DeviceEnabled <- true
     posPrinter
 
 let getDefaultDevice () =
-   let posPrinter = ensure (fun () -> getDefaultPrinterDeviceInfo () |> setUpDevice )
+   let posPrinter = getDefaultPrinterDeviceInfo () |> setUpDevice
    posPrinter.Claim(-1)
    posPrinter.DeviceEnabled <- true
    posPrinter
-
-    
