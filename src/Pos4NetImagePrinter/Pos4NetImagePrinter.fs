@@ -1,7 +1,7 @@
 ﻿module Pos4NetImagePrinter.Pos4NetImagePrinter
 
 open Microsoft.PointOfService
-open CommandLineOptions
+open Pos4NetImagePrinter.CommandLineOptions
 
 let logFunc str =
    printfn "%s" str
@@ -21,7 +21,7 @@ let main args =
    try
       let options = 
           List.ofArray args
-          |> CommandLineOptions.parseCommandLineArgs
+          |> CommandLineOptions.Parser.parseCommandLineArgs
 
       let printer = 
          match options.printer with
@@ -51,10 +51,8 @@ let main args =
          printer.Release()
       else
          failwithf "Printer %A does not support bitmap printing!" options.printer
-
+      0
    with 
       ex ->
          errorHandler ex
-
-
-   0 // return an integer exit code
+         -1
