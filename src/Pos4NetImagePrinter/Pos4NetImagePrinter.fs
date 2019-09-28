@@ -26,16 +26,15 @@ let main args =
           |> CommandLineOptions.parseCommandLineArgs
 
       let printer = PosPrinter.getReady "Microsoft PosPrinter Simulator"
- 
       printer.ErrorEvent.Add errorHandler
 
-
-      printer.PrintNormal(PrinterStation.Receipt, "Ejchuchu")
-      printer.PrintBitmap(PrinterStation.Receipt, @"C:\Users\Manžel\Pictures\SmileFace.jpg", 100, PosPrinter.PrinterBitmapCenter)
-
-      System.Threading.Thread.Sleep 1000
-
-      printer.Release()
+      if printer.CapRecBitmap then
+         printer.PrintNormal(PrinterStation.Receipt, "Ejchuchu")
+         printer.PrintBitmap(PrinterStation.Receipt, @"C:\Users\Manžel\Pictures\SmileFace.jpg", 100, PosPrinter.PrinterBitmapCenter)
+         System.Threading.Thread.Sleep 1000
+         printer.Release()
+      else
+         failwithf "Printer %A does not support bitmap printing!" options.printer
 
    with 
       ex ->
