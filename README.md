@@ -5,4 +5,5 @@ Uses [Microsoft.PointOfService](https://docs.microsoft.com/en-us/previous-versio
 
 Usage:
 ``` cmd
-Pos4NetImagePrinter.exe /printer "Microsoft PosPrinter Simulator" /path C:\Users\User\Pictures\SmileFace.jpg /width Full /label "100% Smile!"``` 
+Pos4NetImagePrinter.exe /printer "Microsoft PosPrinter Simulator" /path C:\Users\User\Pictures\SmileFace.jpg /width Full /label "100% Smile!"
+``` 
