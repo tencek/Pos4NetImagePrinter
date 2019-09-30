@@ -34,7 +34,8 @@ let main args =
       if printer.CapRecBitmap then
 
          match options.label with
-         | Some label -> printer.PrintNormal(PrinterStation.Receipt, label)
+         | Some label -> 
+            printer.PrintNormal(PrinterStation.Receipt, "\027|4C\027|rvC" + label)
          | _ -> ()
 
          let width = 
