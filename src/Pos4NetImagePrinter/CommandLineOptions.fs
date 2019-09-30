@@ -13,10 +13,13 @@ type Width =
 
 type Label = string
 
+type CutOption = CutAfter | NoCut
+
 type CommandLineOptions = {
    printer: Printer
    imageFilePath: Path
    width: Width
    label: Label option
+   cut: CutOption
    }
 

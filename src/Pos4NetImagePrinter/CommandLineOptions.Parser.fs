@@ -52,6 +52,9 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
        | [] -> 
            raise <| new ArgumentNullException("printer", "No printer specified")
 
+   | (IgonoreCase "/NoCut")::restArgs ->
+      parseCommandLineArgsRec restArgs { optionsSoFar with cut = NoCut }
+
    | _unknownArg::restArgs -> 
        parseCommandLineArgsRec restArgs optionsSoFar
 
@@ -61,6 +64,7 @@ let parseCommandLineArgs args =
       imageFilePath = ""
       width = Full
       label = None
+      cut = CutAfter
       }
    parseCommandLineArgsRec args defaultOptions 
 
