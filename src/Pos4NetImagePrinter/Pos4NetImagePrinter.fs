@@ -2,6 +2,7 @@
 
 open Microsoft.PointOfService
 open Pos4NetImagePrinter.CommandLineOptions
+open System.IO
 
 let logFunc str =
    printfn "%s" str
@@ -44,7 +45,9 @@ let main args =
             | AsIs -> PosPrinter.PrinterBitmapAsIs
             | Pixels pixels -> pixels
 
-         printer.PrintBitmap(PrinterStation.Receipt, options.imageFilePath, width, PosPrinter.PrinterBitmapCenter)
+         let bmpFilePath = Path.ChangeExtension(options.imageFilePath, "bmp")
+         ImageConversion.convertToBpm options.imageFilePath bmpFilePath
+         printer.PrintBitmap(PrinterStation.Receipt, bmpFilePath, width, PosPrinter.PrinterBitmapCenter)
          
          if printer.CapRecPaperCut then
             printer.CutPaper(PosPrinter.PrinterCutPaperFullCut)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,6 +6,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ImageConversion.fs" />
     <Compile Include="CommandLineOptions.fs" />
     <Compile Include="CommandLineOptions.Parser.fs" />
     <Compile Include="PosPrinter.fs" />
