@@ -4,3 +4,4 @@ framework: net472
 
 nuget FSharp.Core
 nuget POSForDotNet.SDK
+nuget SixLabors.ImageSharp
