@@ -49,7 +49,7 @@ let main args =
          ImageConversion.convertToBpm options.imageFilePath bmpFilePath
          printer.PrintBitmap(PrinterStation.Receipt, bmpFilePath, width, PosPrinter.PrinterBitmapCenter)
          
-         if printer.CapRecPaperCut then
+         if options.cut = CutAfter && printer.CapRecPaperCut then
             printer.CutPaper(PosPrinter.PrinterCutPaperFullCut)
 
          printer.Release()
