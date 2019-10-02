@@ -6,6 +6,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\..\README.md" Link="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Compile Include="ImageConversion.fs" />
     <Compile Include="CommandLineOptions.fs" />
     <Compile Include="CommandLineOptions.Parser.fs" />
