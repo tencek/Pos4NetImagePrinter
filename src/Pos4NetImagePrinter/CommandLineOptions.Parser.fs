@@ -55,6 +55,9 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
    | (IgnoreCase "/NoCut")::restArgs ->
       parseCommandLineArgsRec restArgs { optionsSoFar with cut = NoCut }
 
+    | (IgnoreCase "/NoConversion")::restArgs ->
+       parseCommandLineArgsRec restArgs { optionsSoFar with imageConversion = NoConversion }
+
    | _unknownArg::restArgs -> 
        parseCommandLineArgsRec restArgs optionsSoFar
 
@@ -65,6 +68,7 @@ let parseCommandLineArgs args =
       width = Full
       label = None
       cut = CutAfter
+      imageConversion = ToBmp8bit
       }
    parseCommandLineArgsRec args defaultOptions 
 

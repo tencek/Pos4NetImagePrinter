@@ -45,9 +45,16 @@ let main args =
             | AsIs -> PosPrinter.PrinterBitmapAsIs
             | Pixels pixels -> pixels
 
-         let bmpFilePath = Path.ChangeExtension(options.imageFilePath, "bmp")
-         ImageConversion.convertToBpm options.imageFilePath bmpFilePath
-         printer.PrintBitmap(PrinterStation.Receipt, bmpFilePath, width, PosPrinter.PrinterBitmapCenter)
+         let bitmapFilePath = 
+            match options.imageConversion with
+            | NoConversion ->
+                options.imageFilePath
+            | ToBmp8bit ->
+                let bmpFilePath = Path.ChangeExtension(options.imageFilePath, "bmp")
+                ImageConversion.convertToBpm options.imageFilePath bmpFilePath
+                bmpFilePath
+
+         printer.PrintBitmap(PrinterStation.Receipt, bitmapFilePath, width, PosPrinter.PrinterBitmapCenter)
          
          if options.cut = CutAfter && printer.CapRecPaperCut then
             printer.CutPaper(PosPrinter.PrinterCutPaperFullCut)
