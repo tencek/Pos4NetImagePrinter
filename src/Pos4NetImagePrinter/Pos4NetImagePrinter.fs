@@ -36,7 +36,7 @@ let main args =
 
          match options.label with
          | Some label -> 
-            printer.PrintNormal(PrinterStation.Receipt, "\027|4C\027|rvC" + label)
+            printer.PrintNormal(PrinterStation.Receipt, "\027|4C" + label + "\x1B|1lF")
          | _ -> ()
 
          let width = 
@@ -54,8 +54,12 @@ let main args =
                 ImageConversion.convertToBpm options.imageFilePath bmpFilePath
                 bmpFilePath
 
-         printer.PrintBitmap(PrinterStation.Receipt, bitmapFilePath, width, PosPrinter.PrinterBitmapCenter)
-         
+         try
+            printer.PrintBitmap(PrinterStation.Receipt, bitmapFilePath, width, PosPrinter.PrinterBitmapCenter)
+         with
+            ex ->
+               errorHandler ex
+
          if options.cut = CutAfter && printer.CapRecPaperCut then
             printer.CutPaper(PosPrinter.PrinterCutPaperFullCut)
 
