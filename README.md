@@ -1,7 +1,9 @@
 # Pos4NetImagePrinter
 A very primitive tool to print images on UPOS printers from command line
 
-Uses [Microsoft.PointOfService](https://docs.microsoft.com/en-us/previous-versions/windows/embedded/bb429024(v=winembedded.4)?redirectedfrom=MSDN).
+Uses 
+ - [Microsoft.PointOfService](https://docs.microsoft.com/en-us/previous-versions/windows/embedded/bb429024(v=winembedded.4)?redirectedfrom=MSDN) for UPOS
+ - [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) for image conversion
 
 Usage:
 ``` cmd
