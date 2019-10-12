@@ -48,7 +48,7 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
    | (IgnoreCase "/label")::restArgs -> 
        match restArgs with
        | label::restArgs -> 
-           parseCommandLineArgsRec restArgs { optionsSoFar with label = Some label } 
+           parseCommandLineArgsRec restArgs { optionsSoFar with label = Custom label } 
        | [] -> 
            raise <| new ArgumentNullException("printer", "No printer specified")
 
@@ -66,7 +66,7 @@ let parseCommandLineArgs args =
       printer = Default
       imageFilePath = ""
       width = Full
-      label = None
+      label = NoLabel
       cut = CutAfter
       imageConversion = ToBmp8bit
       }

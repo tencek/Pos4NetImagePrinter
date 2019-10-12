@@ -11,7 +11,10 @@ type Width =
    | Full
    | Pixels of int
 
-type Label = string
+type Label = 
+   | NoLabel
+   | FileName
+   | Custom of string
 
 type CutOption = CutAfter | NoCut
 
@@ -21,7 +24,7 @@ type CommandLineOptions = {
    printer: Printer
    imageFilePath: Path
    width: Width
-   label: Label option
+   label: Label
    cut: CutOption
    imageConversion: ImageConversion
    }
