@@ -52,6 +52,12 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
        | [] -> 
            raise <| new ArgumentNullException("printer", "No printer specified")
 
+   | (IgnoreCase "/NoLabel")::restArgs ->
+      parseCommandLineArgsRec restArgs { optionsSoFar with label = NoLabel }
+
+   | (IgnoreCase "/FileNameAsLabel")::restArgs ->
+      parseCommandLineArgsRec restArgs { optionsSoFar with label = FileName }
+
    | (IgnoreCase "/NoCut")::restArgs ->
       parseCommandLineArgsRec restArgs { optionsSoFar with cut = NoCut }
 

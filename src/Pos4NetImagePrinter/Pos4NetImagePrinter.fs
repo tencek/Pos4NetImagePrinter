@@ -35,9 +35,14 @@ let main args =
       if printer.CapRecBitmap then
 
          match options.label with
-         | Some label -> 
+         | Custom label -> Some label
+         | FileName -> Some <| Path.GetFileNameWithoutExtension(options.imageFilePath)
+         | NoLabel -> None
+         |> function
+         |Some label ->
             printer.PrintNormal(PrinterStation.Receipt, "\027|4C" + label + "\x1B|1lF")
-         | _ -> ()
+         | None ->
+            ()
 
          let width = 
             match options.width with
