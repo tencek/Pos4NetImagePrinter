@@ -50,20 +50,31 @@ let main args =
             | AsIs -> PosPrinter.PrinterBitmapAsIs
             | Pixels pixels -> pixels
 
-         let bitmapFilePath = 
+         let tempFilePath = 
             match options.imageConversion with
             | NoConversion ->
-                options.imageFilePath
+                let tempFilePath = 
+                   Path.GetTempFileName()
+                   |> (fun path -> Path.ChangeExtension(path, Path.GetExtension(options.imageFilePath)))
+                logFunc <| sprintf "Copying %s to %s" options.imageFilePath tempFilePath
+                File.Copy(options.imageFilePath, tempFilePath)
+                tempFilePath
             | ToBmp8bit ->
-                let bmpFilePath = Path.ChangeExtension(options.imageFilePath, "bmp")
-                ImageConversion.convertToBpm options.imageFilePath bmpFilePath
-                bmpFilePath
+                let tempBmpFilePath = 
+                   Path.GetTempFileName()
+                   |> (fun path -> Path.ChangeExtension(path, "bmp"))
+                logFunc <| sprintf "Converting %s to %s" options.imageFilePath tempBmpFilePath
+                ImageConversion.convertToBpm options.imageFilePath tempBmpFilePath
+                tempBmpFilePath
 
          try
-            printer.PrintBitmap(PrinterStation.Receipt, bitmapFilePath, width, PosPrinter.PrinterBitmapCenter)
+            printer.PrintBitmap(PrinterStation.Receipt, tempFilePath, width, PosPrinter.PrinterBitmapCenter)
          with
             ex ->
                errorHandler ex
+         
+         logFunc <| sprintf "Deleting %s" tempFilePath
+         File.Delete(tempFilePath)
 
          if options.cut = CutAfter && printer.CapRecPaperCut then
             printer.CutPaper(PosPrinter.PrinterCutPaperFullCut)
