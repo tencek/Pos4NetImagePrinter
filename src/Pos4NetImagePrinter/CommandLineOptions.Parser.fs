@@ -41,7 +41,7 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
       | (Int size)::restArgs ->
          parseCommandLineArgsRec restArgs { optionsSoFar with width = Pixels size }
       | arg::_restArgs ->
-         raise <| new ArgumentOutOfRangeException("width", arg, "Invalid argument given for /width param. Use Full. AsIs or a number")
+         raise <| new ArgumentOutOfRangeException("width", arg, "Invalid argument given for /width param. Use Full, AsIs or a number")
       | [] ->
            raise <| new ArgumentNullException("width", "No image width specified")
 
@@ -61,7 +61,23 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
    | (IgnoreCase "/NoCut")::restArgs ->
       parseCommandLineArgsRec restArgs { optionsSoFar with cut = NoCut }
 
-    | (IgnoreCase "/NoConversion")::restArgs ->
+   | (IgnoreCase "/Conversion")::restArgs ->
+      match restArgs with
+      | (IgnoreCase "bmp8")::restArgs ->
+         parseCommandLineArgsRec restArgs { optionsSoFar with imageConversion = ToBmp8Bit }
+      | (IgnoreCase "bmp16")::restArgs ->
+         parseCommandLineArgsRec restArgs { optionsSoFar with imageConversion = ToBmp16Bit }
+      | (IgnoreCase "bmp24")::restArgs ->
+         parseCommandLineArgsRec restArgs { optionsSoFar with imageConversion = ToBmp24Bit }
+      | (IgnoreCase "bmp32")::restArgs
+      | (IgnoreCase "bmp")::restArgs ->
+         parseCommandLineArgsRec restArgs { optionsSoFar with imageConversion = ToBmp32Bit }
+      | arg::_restArgs ->
+         raise <| new ArgumentOutOfRangeException("conversion", arg, "Invalid argument given for /conversion param. Use bmp, bmp8, bmp16, bmp24 or bmp32")
+      | [] ->
+         raise <| new ArgumentNullException("conversion", "No conversion specified")
+         
+   | (IgnoreCase "/NoConversion")::restArgs ->
        parseCommandLineArgsRec restArgs { optionsSoFar with imageConversion = NoConversion }
 
    | _unknownArg::restArgs -> 
@@ -74,7 +90,7 @@ let parseCommandLineArgs args =
       width = Full
       label = NoLabel
       cut = CutAfter
-      imageConversion = ToBmp8bit
+      imageConversion = ToBmp32Bit
       }
    parseCommandLineArgsRec args defaultOptions 
 

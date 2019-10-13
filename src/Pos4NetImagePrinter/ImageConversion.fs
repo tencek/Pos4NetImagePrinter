@@ -4,7 +4,15 @@ open SixLabors.ImageSharp
 open SixLabors.ImageSharp.Formats.Bmp
 open System
 
-let convertToBpm (inputFilePath:string) (outputFilePath:string)=
+type BmpBitsPerPixel = Pixel8 | Pixel16 | Pixel24 | Pixel32
+
+let convertToBpm (inputFilePath:string) (outputFilePath:string) (bitsPerPixel:BmpBitsPerPixel)=
    let bmpEncoder = new BmpEncoder()
-   bmpEncoder.BitsPerPixel <- Nullable<BmpBitsPerPixel>(BmpBitsPerPixel.Pixel8)
+   let imageSharpBitsPerPixel =
+      match bitsPerPixel with
+      | Pixel8 -> Formats.Bmp.BmpBitsPerPixel.Pixel8
+      | Pixel16 -> Formats.Bmp.BmpBitsPerPixel.Pixel16
+      | Pixel24 -> Formats.Bmp.BmpBitsPerPixel.Pixel24
+      | Pixel32 -> Formats.Bmp.BmpBitsPerPixel.Pixel32
+   bmpEncoder.BitsPerPixel <- Nullable<Formats.Bmp.BmpBitsPerPixel>(imageSharpBitsPerPixel)
    Image.Load(inputFilePath).Save(outputFilePath, bmpEncoder)

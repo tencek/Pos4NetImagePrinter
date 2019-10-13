@@ -18,7 +18,7 @@ type Label =
 
 type CutOption = CutAfter | NoCut
 
-type ImageConversion = NoConversion | ToBmp8bit
+type ImageConversion = NoConversion | ToBmp8Bit | ToBmp16Bit | ToBmp24Bit | ToBmp32Bit
 
 type CommandLineOptions = {
    printer: Printer

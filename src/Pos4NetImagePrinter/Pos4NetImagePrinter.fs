@@ -59,13 +59,19 @@ let main args =
                 logFunc <| sprintf "Copying %s to %s" options.imageFilePath tempFilePath
                 File.Copy(options.imageFilePath, tempFilePath)
                 tempFilePath
-            | ToBmp8bit ->
-                let tempBmpFilePath = 
-                   Path.GetTempFileName()
-                   |> (fun path -> Path.ChangeExtension(path, "bmp"))
-                logFunc <| sprintf "Converting %s to %s" options.imageFilePath tempBmpFilePath
-                ImageConversion.convertToBpm options.imageFilePath tempBmpFilePath
-                tempBmpFilePath
+            | toBmp ->
+               let bmpBitsPerPixel =
+                  match toBmp with
+                  | ToBmp8Bit -> ImageConversion.Pixel8
+                  | ToBmp16Bit -> ImageConversion.Pixel16
+                  | ToBmp24Bit -> ImageConversion.Pixel24
+                  | _default -> ImageConversion.Pixel32
+               let tempBmpFilePath = 
+                  Path.GetTempFileName()
+                  |> (fun path -> Path.ChangeExtension(path, "bmp"))
+               logFunc <| sprintf "Converting %s to %s (%A)" options.imageFilePath tempBmpFilePath bmpBitsPerPixel
+               ImageConversion.convertToBpm options.imageFilePath tempBmpFilePath bmpBitsPerPixel
+               tempBmpFilePath
 
          try
             printer.PrintBitmap(PrinterStation.Receipt, tempFilePath, width, PosPrinter.PrinterBitmapCenter)
