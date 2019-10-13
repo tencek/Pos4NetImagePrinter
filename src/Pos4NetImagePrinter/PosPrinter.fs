@@ -31,12 +31,12 @@ let private setUpDevice posPrinterInfo =
         
 let getDeviceByName logicalDeviceName =
     let posPrinter = getPrinterDeviceInfoByName logicalDeviceName |> setUpDevice
-    posPrinter.Claim(-1)
+    posPrinter.Claim(3000)
     posPrinter.DeviceEnabled <- true
     posPrinter
 
 let getDefaultDevice () =
    let posPrinter = getDefaultPrinterDeviceInfo () |> setUpDevice
-   posPrinter.Claim(-1)
+   posPrinter.Claim(3000)
    posPrinter.DeviceEnabled <- true
    posPrinter
