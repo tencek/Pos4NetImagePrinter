@@ -46,17 +46,11 @@ let rec private parseCommandLineArgsRec args optionsSoFar =
            raise <| new ArgumentNullException("width", "No image width specified")
 
    | (IgnoreCase "/label")::restArgs -> 
-       match restArgs with
-       | label::restArgs -> 
-           parseCommandLineArgsRec restArgs { optionsSoFar with label = Custom label } 
-       | [] -> 
+      match restArgs with
+      | label::restArgs -> 
+         parseCommandLineArgsRec restArgs { optionsSoFar with labels = optionsSoFar.labels @ [label] }
+      | [] -> 
            raise <| new ArgumentNullException("printer", "No printer specified")
-
-   | (IgnoreCase "/NoLabel")::restArgs ->
-      parseCommandLineArgsRec restArgs { optionsSoFar with label = NoLabel }
-
-   | (IgnoreCase "/FileNameAsLabel")::restArgs ->
-      parseCommandLineArgsRec restArgs { optionsSoFar with label = FileName }
 
    | (IgnoreCase "/NoCut")::restArgs ->
       parseCommandLineArgsRec restArgs { optionsSoFar with cut = NoCut }
@@ -88,7 +82,7 @@ let parseCommandLineArgs args =
       printer = Default
       imageFilePath = ""
       width = Full
-      label = NoLabel
+      labels = List.Empty
       cut = CutAfter
       imageConversion = ToBmp32Bit
       }
